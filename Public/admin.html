@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎬 Kino Bot - Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      color: #333;
+      font-size: 24px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    
+    .tab-btn {
+      background: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .tab-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Stats Dashboard */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      color: #999;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+    
+    .stat-card .value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .stat-card .change {
+      font-size: 12px;
+      color: #27ae60;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .form-section {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .form-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 18px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #229954;
+    }
+    
+    /* Table Styles */
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    table th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    table td {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13px;
+    }
+    
+    table tr:hover {
+      background: #f9f9f9;
+    }
+    
+    .action-btn {
+      padding: 6px 12px;
+      margin-right: 5px;
+      font-size: 12px;
+    }
+    
+    /* Alert */
+    .alert {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    
+    .channel-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .channel-item info {
+      flex: 1;
+    }
+    
+    .channel-item strong {
+      display: block;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .channel-item span {
+      color: #999;
+      font-size: 13px;
+    }
+    
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .tabs {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 Kino Bot - Admin Panel</h1>
+      <div style="color: #999; font-size: 12px;">
+        <span id="datetime"></span>
+      </div>
+    </header>
+    
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('movies')">🎬 Kinolar</button>
+      <button class="tab-btn" onclick="switchTab('channels')">📡 Kanallar</button>
+      <button class="tab-btn" onclick="switchTab('vip')">💎 VIP Narxlar</button>
+      <button class="tab-btn" onclick="switchTab('broadcast')">📢 Reklama</button>
+      <button class="tab-btn" onclick="switchTab('settings')">⚙️ Sozlamalar</button>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>👥 Jami Foydalanuvchilar</h3>
+          <div class="value" id="totalUsers">0</div>
+          <div class="change">Bugungi: <span id="newUsers">0</span></div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>💎 VIP Obunalari</h3>
+          <div class="value" id="vipUsers">0</div>
+          <div class="change">% <span id="vipPercent">0</span></div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>🎬 Kinolar Soni</h3>
+          <div class="value" id="totalMovies">0</div>
+          <div class="change">Faol: <span id="activeMovies">0</span></div>
+        </div>
+        
+        <div class="stat-card">
+          <h3>💰 Oylik Foyda</h3>
+          <div class="value" id="monthlyRevenue">0</div>
+          <div class="change">so'm</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- KINOLAR -->
+    <div id="movies" class="tab-content">
+      <div class="form-section">
+        <h2>🎬 Yangi Kino Qo'shish</h2>
+        <form id="movieForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kino Kodi *</label>
+              <input type="text" id="movieCode" required placeholder="1001">
+            </div>
+            <div class="form-group">
+              <label>Kino Nomi *</label>
+              <input type="text" id="movieName" required placeholder="Kino nomi">
+            </div>
+            <div class="form-group">
+              <label>Asl Nomi</label>
+              <input type="text" id="originalName" placeholder="Original nomi">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Yil</label>
+              <input type="number" id="movieYear" placeholder="2024">
+            </div>
+            <div class="form-group">
+              <label>Janr (vergul bilan ajrat)</label>
+              <input type="text" id="movieGenre" placeholder="Drama, Aksion, Romantika">
+            </div>
+            <div class="form-group">
+              <label>Reyting (0-10)</label>
+              <input type="number" id="movieRating" min="0" max="10" placeholder="7.5">
+            </div>
+            <div class="form-group">
+              <label>Davomiyligi (min)</label>
+              <input type="number" id="movieDuration" placeholder="120">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Tavsifi</label>
+            <textarea id="movieDescription" placeholder="Kino haqida tavsif..."></textarea>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Video URL *</label>
+              <input type="url" id="movieVideo" required placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label>Sifati</label>
+              <select id="movieQuality">
+                <option>720p</option>
+                <option selected>1080p</option>
+                <option>4K</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="moviePremium">
+                💎 Premium Kino
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">✅ Qo'shish</button>
+        </form>
+      </div>
+      
+      <div class="form-section">
+        <h2>📋 Kinolar Ro'yxati</h2>
+        <div id="moviesList"></div>
+      </div>
+    </div>
+    
+    <!-- KANALLAR -->
+    <div id="channels" class="tab-content">
+      <div class="form-section">
+        <h2>📡 Majburiy Kanal Qo'shish</h2>
+        <form id="channelForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kanal ID *</label>
+              <input type="text" id="channelId" required placeholder="-1001234567890">
+            </div>
+            <div class="form-group">
+              <label>Kanal Nomi *</label>
+              <input type="text" id="channelName" required placeholder="Kino Yangiliklari">
+            </div>
+            <div class="form-group">
+              <label>Kanal Linki *</label>
+              <input type="url" id="channelLink" required placeholder="https://t.me/...">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">✅ Qo'shish</button>
+        </form>
+      </div>
+      
+      <div class="form-section">
+        <h2>📡 Kanallar</h2>
+        <div id="channelsList"></div>
+      </div>
+    </div>
+    
+    <!-- VIP NARXLAR -->
+    <div id="vip" class="tab-content">
+      <div class="form-section">
+        <h2>💎 VIP Obuna Narxlari</h2>
+        <form id="vipForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>1 Oylik Narxi (so'm) *</label>
+              <input type="number" id="vip1month" required placeholder="10000">
+            </div>
+            <div class="form-group">
+              <label>3 Oylik Narxi (so'm) *</label>
+              <input type="number" id="vip3month" required placeholder="25000">
+            </div>
+            <div class="form-group">
+              <label>1 Yilik Narxi (so'm) *</label>
+              <input type="number" id="vip1year" required placeholder="75000">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">✅ Yangilash</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- REKLAMA -->
+    <div id="broadcast" class="tab-content">
+      <div class="form-section">
+        <h2>📢 Barcha Foydalanuvchilarga Reklama Yuborish</h2>
+        <form id="broadcastForm">
+          <div class="form-group">
+            <label>Reklama Matni *</label>
+            <textarea id="broadcastMessage" required placeholder="Foydalanuvchilarga yuborilacak xabar..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="broadcastPin">
+              ⭐ Xabarni ekranda qoldirib turish
+            </label>
+          </div>
+          
+          <button type="submit" class="btn btn-success">📤 Yuborish</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- SOZLAMALAR -->
+    <div id="settings" class="tab-content">
+      <div class="form-section">
+        <h2>⚙️ Bot Sozlamalari</h2>
+        <form id="settingsForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Support Username *</label>
+              <input type="text" id="supportUsername" required placeholder="x7fan">
+            </div>
+            <div class="form-group">
+              <label>Developer Username *</label>
+              <input type="text" id="developerUsername" required placeholder="x7fan">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">✅ Saqlash</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Tab switch funksiya
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+    
+    // DateTime yangilash
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('datetime').textContent = 
+        now.toLocaleString('uz-UZ', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+    
+    // Statistika yuklash
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        
+        document.getElementById('totalUsers').textContent = data.totalUsers;
+        document.getElementById('newUsers').textContent = data.today?.newUsers || 0;
+        document.getElementById('vipUsers').textContent = data.vipUsers;
+        document.getElementById('vipPercent').textContent = 
+          ((data.vipUsers / data.totalUsers) * 100).toFixed(1);
+        document.getElementById('totalMovies').textContent = data.totalMovies;
+        document.getElementById('monthlyRevenue').textContent = 
+          data.monthlyRevenue.toLocaleString('uz-UZ');
+      } catch (err) {
+        console.error('Stats yuklash xatosi:', err);
+      }
+    }
+    loadStats();
+    setInterval(loadStats, 30000);
+    
+    // Kino qo'shish
+    document.getElementById('movieForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const movie = {
+        code: document.getElementById('movieCode').value,
+        name: document.getElementById('movieName').value,
+        year: parseInt(document.getElementById('movieYear').value),
+        genre: document.getElementById('movieGenre').value,
+        rating: parseFloat(document.getElementById('movieRating').value),
+        duration: parseInt(document.getElementById('movieDuration').value),
+        description: document.getElementById('movieDescription').value,
+        video: document.getElementById('movieVideo').value,
+        quality: document.getElementById('movieQuality').value,
+        premiumOnly: document.getElementById('moviePremium').checked
+      };
+      
+      try {
+        const res = await fetch('/api/movies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(movie)
+        });
+        
+        if (res.ok) {
+          alert('✅ Kino qo\'shildi!');
+          document.getElementById('movieForm').reset();
+          loadMovies();
+        }
+      } catch (err) {
+        alert('❌ Xatolik: ' + err.message);
+      }
+    });
+    
+    // Kinolar ro'yxatini yuklash
+    async function loadMovies() {
+      try {
+        const res = await fetch('/api/movies');
+        const movies = await res.json();
+        
+        const html = movies.map(m => `
+          <table style="margin-bottom: 10px;">
+            <tr>
+              <td><strong>${m.name}</strong> (${m.code})</td>
+              <td>${m.year} • ${m.genre.join(', ')}</td>
+              <td>${m.views} ko'rildi</td>
+              <td>
+                <button class="btn btn-danger action-btn" onclick="deleteMovie('${m._id}')">🗑️ O'chirish</button>
+              </td>
+            </tr>
+          </table>
+        `).join('');
+        
+        document.getElementById('moviesList').innerHTML = html || '<p>Kinolar yo\'q</p>';
+      } catch (err) {
+        console.error('Kinolar yuklash xatosi:', err);
+      }
+    }
+    loadMovies();
+    
+    // Kino o'chirish
+    async function deleteMovie(id) {
+      if (!confirm('O\'chirishni tasdiqlaysizmi?')) return;
+      
+      try {
+        await fetch(`/api/movies/${id}`, { method: 'DELETE' });
+        alert('✅ Kino o\'chirildi!');
+        loadMovies();
+      } catch (err) {
+        alert('❌ Xatolik: ' + err.message);
+      }
+    }
+    
+    // VIP narxlar
+    document.getElementById('vipForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      try {
+        const res = await fetch('/api/config/vip-prices', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            '1month': parseInt(document.getElementById('vip1month').value),
+            '3month': parseInt(document.getElementById('vip3month').value),
+            '1year': parseInt(document.getElementById('vip1year').value)
+          })
+        });
+        
+        alert('✅ VIP narxlar yangilandi!');
+      } catch (err) {
+        alert('❌ Xatolik: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
