@@ -15,11 +15,11 @@ const UserSchema = new mongoose.Schema({
   // VIP Obuna
   vip: {
     active: { type: Boolean, default: false },
-    plan: { type: String, enum: ['1month', '3month', '1year'], default: null },
+    plan: { type: String, enum: ['none', '1month', '3month', '1year'], default: 'none' },
     price: { type: Number, default: 0 },
     startDate: Date,
     endDate: Date,
-    method: { type: String, enum: ['click', 'payme', 'hazna', 'savdo'] }
+    method: { type: String, enum: ['click', 'payme', 'hazna', 'savdo', 'none'], default: 'none' }
   },
   
   // Saqlangan kinolar
