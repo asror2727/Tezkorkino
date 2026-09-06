@@ -19,7 +19,8 @@ const UserSchema = new mongoose.Schema({
     price: { type: Number, default: 0 },
     startDate: Date,
     endDate: Date,
-    method: { type: String, enum: ['click', 'payme', 'hazna', 'savdo', 'none'], default: 'none' }
+    method: { type: String, enum: ['click', 'payme', 'hazna', 'savdo', 'none'], default: 'none' },
+    isPremium: { type: Boolean, default: false }
   },
   
   // Saqlangan kinolar
@@ -29,6 +30,7 @@ const UserSchema = new mongoose.Schema({
   notes: [{
     movieId: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie' },
     text: String,
+    rating: { type: Number, min: 1, max: 5 },
     date: { type: Date, default: Date.now }
   }],
   
@@ -38,7 +40,8 @@ const UserSchema = new mongoose.Schema({
     method: String,
     status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
     date: { type: Date, default: Date.now },
-    transactionId: String
+    transactionId: String,
+    plan: String
   }],
   
   // Statistika
@@ -46,5 +49,8 @@ const UserSchema = new mongoose.Schema({
   totalWatched: { type: Number, default: 0 },
   joinDate: { type: Date, default: Date.now, index: true }
 });
+
+// Index fix - E11000 duplicate key error'ni hal qilish
+UserSchema.index({ userId: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model('User', UserSchema);
