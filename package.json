@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Professional Telegram Kino Bot",
   "main": "bot.js",
-  "type": "module",
   "scripts": {
     "start": "node bot.js",
     "admin": "node server.js",
